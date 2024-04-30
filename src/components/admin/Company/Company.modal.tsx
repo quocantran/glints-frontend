@@ -13,7 +13,8 @@ import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import dynamic from "next/dynamic";
 
 // Dynamically import ReactQuill, this will make it only load in the browser
-const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
 interface IProps {
   openModal: boolean;
   setOpenModal: (v: boolean) => void;

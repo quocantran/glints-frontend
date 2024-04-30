@@ -70,10 +70,10 @@ const Header: React.FC = () => {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
+        <Link href="/">
+          <img className={cx("logo")} src="/images/logo.webp" alt="logo" />
+        </Link>
         <div className={cx("header-left")}>
-          <Link href="/">
-            <img className={cx("logo")} src="/images/logo.webp" alt="logo" />
-          </Link>
           <div className={cx("header-item")}>
             <Link href="/jobs">TÌM VIỆC LÀM</Link>
           </div>

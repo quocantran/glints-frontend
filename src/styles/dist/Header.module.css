@@ -1,9 +1,9 @@
 .wrapper {
   position: sticky;
   top: 0px;
-  background-color: rgb(255, 255, 255);
+  background-color: white;
   z-index: 101;
-  border-bottom: 1px solid rgb(198, 198, 198);
+  border-bottom: 1px solid #c6c6c6;
   display: flex;
   justify-content: center;
 }
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   padding: 20px 0px 17px;
-  background-color: rgb(255, 255, 255);
+  background-color: white;
   height: 70px;
   justify-content: space-between;
 }
@@ -37,21 +37,20 @@
   font-size: 13px;
   font-weight: 500;
   position: relative;
-  ::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 2px;
-    background: transparent;
-    bottom: -5px;
-    left: 0px;
-    transition: all 0.2s ease-in-out 0s;
-  }
-
-  :hover::after {
-    background: rgb(0, 0, 0);
-    width: 100%;
-  }
+}
+.header-item ::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: transparent;
+  bottom: -5px;
+  left: 0px;
+  transition: all 0.2s ease-in-out 0s;
+}
+.header-item :hover::after {
+  background: black;
+  width: 100%;
 }
 
 .header-right {
@@ -63,9 +62,11 @@
   .header-left {
     display: none;
   }
+
   .logo {
     margin-left: 20px;
   }
+
   .header-right {
     margin-right: 20px;
   }

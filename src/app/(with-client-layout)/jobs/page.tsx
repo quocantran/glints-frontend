@@ -17,10 +17,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import vi_VN from "dayjs/locale/vi";
 import ResumeModalClient from "@/components/client/Resume/ResumeClient.modal";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatNumberToMillions } from "@/helpers/FormatMoney";
 import { isMobile } from "react-device-detect";
-import Image from "next/image";
 dayjs.extend(relativeTime);
 dayjs.locale(vi_VN);
 
@@ -29,13 +28,15 @@ const cx = classNames.bind(styles);
 const PAGE = 1;
 
 const JobClient = (props: any) => {
+  const params = useSearchParams();
   const [jobs, setJobs] = useState<IJob[]>([]);
   const [current, setCurrent] = useState<number>(PAGE);
   const [name, setName] = useState<string | undefined>(
-    props?.searchParams.name
+    params.get("name") || undefined
   );
+
   const [location, setLocation] = useState<string | undefined>(
-    props?.searchParams.location
+    params.get("location") || undefined
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [sort, setSort] = useState<string>("createdAt");

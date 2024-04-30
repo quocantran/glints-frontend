@@ -934,12 +934,11 @@ exports.callLogin = function (username, password) { return __awaiter(void 0, voi
             case 2:
                 _b.apply(_a, [(_c.description = _d.sent(),
                         _c)]);
-                return [3 /*break*/, 5];
+                return [2 /*return*/];
             case 3: return [4 /*yield*/, res.json()];
             case 4:
                 data = _d.sent();
                 return [2 /*return*/, data];
-            case 5: return [2 /*return*/];
         }
     });
 }); };

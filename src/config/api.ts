@@ -768,10 +768,10 @@ export const callLogin = async (
       message: "Có lỗi xảy ra",
       description: await res.json().then((data) => data.message),
     });
-  } else {
-    const data = await res.json();
-    return data;
+    return;
   }
+  const data = await res.json();
+  return data;
 };
 
 export const callRegister = async (body: IUser) => {

@@ -182,7 +182,7 @@ const JobClient = (props: any) => {
                         );
                       })}
                       <div className={cx("item-content")}>
-                        <Image src={job.company?.logo as string} alt="logo" />
+                        <img src={job.company?.logo} alt="logo" />
                         <div className={cx("company-info")}>
                           <Link href={`/companies/${job.company?._id}`}>
                             {job.company?.name}

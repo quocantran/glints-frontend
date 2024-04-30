@@ -1,0 +1,50 @@
+.wrapper {
+  margin-top: 90px;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0px, 1fr));
+  gap: 30px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-right: 10px;
+  }
+}
+
+.header {
+  text-align: center;
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.card-name {
+  span {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: repeat(1, minmax(0px, 1fr));
+  }
+}

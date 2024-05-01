@@ -206,7 +206,7 @@ export const deleteUser = async (id: string) => {
 
 // API COMPANIES
 export const fetchCompanies = async (
-  current?: number,
+  current: number = 1,
   name: string = "",
   pageSize: number = 10
 ): Promise<IBackendRes<IModelPaginate<ICompany>> | undefined> => {
@@ -780,7 +780,7 @@ export const callRegister = async (body: IUser) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
+
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -833,6 +833,7 @@ export const logout = async (): Promise<void> => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     },
+    credentials: "include",
   });
   if (res.statusCode === 400) {
     notification.error({

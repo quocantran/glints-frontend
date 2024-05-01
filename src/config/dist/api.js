@@ -251,6 +251,7 @@ exports.deleteUser = function (id) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 // API COMPANIES
 exports.fetchCompanies = function (current, name, pageSize) {
+    if (current === void 0) { current = 1; }
     if (name === void 0) { name = ""; }
     if (pageSize === void 0) { pageSize = 10; }
     return __awaiter(void 0, void 0, Promise, function () {
@@ -951,7 +952,6 @@ exports.callRegister = function (body) { return __awaiter(void 0, void 0, void 0
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    credentials: "include",
                     body: JSON.stringify(body)
                 })];
             case 1:
@@ -1026,7 +1026,8 @@ exports.logout = function () { return __awaiter(void 0, void 0, Promise, functio
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + localStorage.getItem("access_token")
-                    }
+                    },
+                    credentials: "include"
                 })];
             case 1:
                 res = _a.sent();

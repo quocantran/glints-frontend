@@ -5,9 +5,11 @@ import { fetchResumes } from "@/config/api";
 import Access from "@/components/admin/Access/Access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 import ResumeTable from "@/components/admin/Resumes/Resume.table";
+import { useSearchParams } from "next/navigation";
 
 const Resumes = (props: any) => {
-  const current = props.searchParams?.page ?? 1;
+  const param = useSearchParams();
+  const current = (param.get("page") as unknown as number) || 1;
   const [resumes, setResumes] = useState<IResume[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [meta, setMeta] = useState<any>(null);

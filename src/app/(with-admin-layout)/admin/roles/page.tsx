@@ -5,9 +5,11 @@ import { fetchRoles } from "@/config/api";
 import Access from "@/components/admin/Access/Access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 import RoleTable from "@/components/admin/Role/Role.table";
+import { useSearchParams } from "next/navigation";
 
 const Roles = (props: any) => {
-  const current = props.searchParams?.page ?? 1;
+  const param = useSearchParams();
+  const current = (param.get("page") as unknown as number) || 1;
   const [roles, setRoles] = useState<IRole[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [meta, setMeta] = useState<any>(null);

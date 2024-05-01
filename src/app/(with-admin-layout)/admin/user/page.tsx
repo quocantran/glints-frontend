@@ -5,9 +5,11 @@ import { IBackendRes, IModelPaginate, IUser } from "@/types/backend";
 import { fetchUsers } from "@/config/api";
 import Access from "@/components/admin/Access/Access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
+import { useSearchParams } from "next/navigation";
 
 const User = (props: any) => {
-  const current = props.searchParams?.page ?? 1;
+  const param = useSearchParams();
+  const current = (param.get("page") as unknown as number) || 1;
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [meta, setMeta] = useState<any>(null);

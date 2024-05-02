@@ -74,8 +74,6 @@ const UserModal = (props: IProps) => {
   }
 
   const handleSubmit = async (valuesForm: any) => {
-    const token = localStorage.getItem("access_token") as string;
-
     const { name, email, password, address, age, gender, role, company } =
       valuesForm;
     if (dataInit?._id) {
@@ -89,8 +87,8 @@ const UserModal = (props: IProps) => {
         address,
         role: role?.value,
         company: {
-          _id: company?.value,
-          name: company?.label,
+          _id: company?.value ?? dataInit.company?._id,
+          name: company?.label ?? dataInit.company?.name,
         },
       };
 
@@ -231,7 +229,7 @@ const UserModal = (props: IProps) => {
             <DebounceSelect
               allowClear
               showSearch
-              defaultValue={roles}
+              defaultValue={dataInit?.role?.name}
               value={roles}
               placeholder="Chọn vai trò"
               fetchOptions={fetchRoleList}
@@ -258,7 +256,7 @@ const UserModal = (props: IProps) => {
             <DebounceSelect
               allowClear
               showSearch
-              defaultValue={companies}
+              defaultValue={dataInit?.company?.name}
               value={companies}
               placeholder="Chọn công ty"
               fetchOptions={fetchCompanyList}

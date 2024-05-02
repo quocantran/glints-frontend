@@ -56,7 +56,7 @@ const ResumeModal = (props: IProps) => {
 
   return (
     <>
-      {openModal && (
+      {
         <ModalForm
           title={"Cập nhật trạng thái CV"}
           open={openModal}
@@ -116,7 +116,7 @@ const ResumeModal = (props: IProps) => {
             </Descriptions.Item>
           </Descriptions>
         </ModalForm>
-      )}
+      }
     </>
   );
 };

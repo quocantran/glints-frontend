@@ -61,7 +61,7 @@ const PermissionModal = (props: IProps) => {
 
   return (
     <>
-      {openModal && (
+      {
         <ModalForm
           title={dataInit?._id ? "Cập nhật quyền hạn" : "Tạo mới quyền hạn"}
           open={openModal}
@@ -125,7 +125,7 @@ const PermissionModal = (props: IProps) => {
             </Col>
           </Row>
         </ModalForm>
-      )}
+      }
     </>
   );
 };

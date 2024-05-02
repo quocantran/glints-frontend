@@ -178,7 +178,7 @@ const RoleModal = (props: IProps) => {
 
   return (
     <>
-      {openModal && (
+      {
         <ModalForm
           title={<>{singleRole?._id ? "Cập nhật Role" : "Tạo mới Role"}</>}
           open={openModal}
@@ -248,7 +248,7 @@ const RoleModal = (props: IProps) => {
             </Col>
           </Row>
         </ModalForm>
-      )}
+      }
     </>
   );
 };

@@ -54,7 +54,7 @@ const RoleModal = (props: IProps) => {
 
   const [form] = Form.useForm();
   const [singleRole, setSingleRole] = useState<IRole | null>(null);
-  const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [listPermissions, setListPermissions] = useState<
     | {
         module: string;

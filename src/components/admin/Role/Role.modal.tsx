@@ -124,6 +124,14 @@ const RoleModal = (props: IProps) => {
     }
   }, [listPermissions, singleRole]);
 
+  const handleReset = () => {
+    setIsFetching(false);
+    setOpenModal(false);
+    setSingleRole(null);
+    setIsEdit(false);
+    setReload(!reload);
+  };
+
   const submitRole = async (valuesForm: any) => {
     const { description, isActive, name, permissions } = valuesForm;
     const checkedPermissions = [];
@@ -148,11 +156,7 @@ const RoleModal = (props: IProps) => {
       if (res) {
         message.success("Cập nhật role thành công");
         form.resetFields();
-        setIsFetching(false);
-        setOpenModal(false);
-        setSingleRole(null);
-        setIsEdit(false);
-        setReload(!reload);
+        handleReset();
       }
     } else {
       //create
@@ -167,11 +171,7 @@ const RoleModal = (props: IProps) => {
       if (res) {
         message.success("Thêm mới role thành công");
         form.resetFields();
-        setOpenModal(false);
-        setIsFetching(false);
-        setSingleRole(null);
-        setIsEdit(false);
-        setReload(!reload);
+        handleReset();
       }
     }
   };

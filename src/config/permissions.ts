@@ -82,9 +82,7 @@ export const ALL_PERMISSIONS = {
 };
 
 export const ALL_MODULES = {
-  AUTH: "AUTH",
   COMPANIES: "COMPANIES",
-  FILES: "FILES",
   JOBS: "JOBS",
   PERMISSIONS: "PERMISSIONS",
   RESUMES: "RESUMES",

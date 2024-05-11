@@ -106,6 +106,7 @@ const UserResume = (props: any) => {
   ) : (
     <div>
       <Table<IResume>
+        bordered={true}
         columns={columns}
         dataSource={listCV}
         loading={isFetching}

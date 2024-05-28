@@ -14,6 +14,7 @@ const LayoutAdmin = (props: IProps) => {
   const { children } = props;
   const role = useAppSelector((state) => state.auth.user.role.name);
   const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
+  const loading = useAppSelector((state) => state.auth.isLoading);
   const navigate = useRouter();
   const [shouldRender, setShouldRender] = useState(false);
 
@@ -35,7 +36,7 @@ const LayoutAdmin = (props: IProps) => {
     setShouldRender(true);
   }, []);
 
-  return <>{shouldRender && children}</>;
+  return loading ? <Skeleton /> : <>{shouldRender && children}</>;
 };
 
 export default LayoutAdmin;

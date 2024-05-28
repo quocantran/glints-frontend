@@ -19,22 +19,24 @@ const LayoutAdmin = (props: IProps) => {
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    if (!isAuth) {
-      navigate.push("/login", { scroll: false });
-      return;
+    if (!loading) {
+      if (!isAuth) {
+        navigate.push("/login", { scroll: false });
+        return;
+      }
+      if (role === "NORMAL_USER") {
+        notification.error({
+          message: "Unauthorized",
+          description: "Bạn không có quyền truy cập vào trang này!",
+        });
+        setTimeout(() => {
+          navigate.push("/");
+        }, 2000);
+        return;
+      }
+      setShouldRender(true);
     }
-    if (role === "NORMAL_USER") {
-      notification.error({
-        message: "Unauthorized",
-        description: "Bạn không có quyền truy cập vào trang này!",
-      });
-      setTimeout(() => {
-        navigate.push("/");
-      }, 2000);
-      return;
-    }
-    setShouldRender(true);
-  }, []);
+  }, [loading]);
 
   return loading ? <Skeleton /> : <>{shouldRender && children}</>;
 };

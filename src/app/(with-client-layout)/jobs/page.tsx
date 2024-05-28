@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import styles from "../../../styles/JobClient.module.scss";
 import classNames from "classnames/bind";
 import { fetchJobs } from "@/config/api";
@@ -282,4 +282,10 @@ const JobClient = (props: any) => {
   );
 };
 
-export default JobClient;
+const JobClientWithSuspense = (props: any) => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <JobClient {...props} />
+  </Suspense>
+);
+
+export default JobClientWithSuspense;

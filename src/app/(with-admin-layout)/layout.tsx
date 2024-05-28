@@ -8,6 +8,7 @@ import StyledComponentsRegistry from "@/lib/antd.registry";
 import { ConfigProvider } from "antd";
 import vi_VN from "antd/lib/locale/vi_VN";
 import StoreProvider from "../StoreProvider";
+import LayoutApp from "@/components/layout/LayoutApp";
 import LayoutAdmin from "@/components/layout/LayoutAdmin";
 import "react-quill/dist/quill.snow.css";
 export const metadata: Metadata = {
@@ -27,10 +28,12 @@ export default function AdminLayout({
           <StoreProvider>
             <ConfigProvider locale={vi_VN}>
               <StyledComponentsRegistry>
-                <LayoutAdmin>
-                  <Sidebar />
-                  <div className="admin-content">{children}</div>
-                </LayoutAdmin>
+                <LayoutApp>
+                  <LayoutAdmin>
+                    <Sidebar />
+                    <div className="admin-content">{children}</div>
+                  </LayoutAdmin>
+                </LayoutApp>
               </StyledComponentsRegistry>
             </ConfigProvider>
           </StoreProvider>

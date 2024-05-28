@@ -8,6 +8,7 @@ import { ConfigProvider } from "antd";
 import vi_VN from "antd/lib/locale/vi_VN";
 import StyledComponentsRegistry from "@/lib/antd.registry";
 import StoreProvider from "../StoreProvider";
+import LayoutApp from "@/components/layout/LayoutApp";
 
 export const metadata: Metadata = {
   title: "Glints - Kênh Tuyển Dụng - Trang Tìm Kiếm Việc Làm Uy Tín",
@@ -28,10 +29,12 @@ export default function RootLayout({
           <StoreProvider>
             <ConfigProvider locale={vi_VN}>
               <StyledComponentsRegistry>
-                <Header />
-                {children}
+                <LayoutApp>
+                  <Header />
+                  {children}
 
-                <Footer />
+                  <Footer />
+                </LayoutApp>
               </StyledComponentsRegistry>
             </ConfigProvider>
           </StoreProvider>

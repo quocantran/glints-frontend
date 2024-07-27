@@ -553,7 +553,7 @@ export const deleteJob = async (id: string) => {
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     },
   });
-  if (res.statusCode !== 201) {
+  if (res.statusCode !== 200) {
     notification.error({
       message: "Có lỗi xảy ra",
       description: res.message,

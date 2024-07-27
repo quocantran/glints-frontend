@@ -10,11 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
-  deleteCompany,
-  deleteUser,
-  fetchCompanies,
   fetchJobs,
-  fetchUsers,
+  deleteJob
 } from "@/config/api";
 import Access from "../Access/Access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
@@ -120,7 +117,7 @@ const JobTable = (props: IProps) => {
               title={"Xác nhận xóa công việc"}
               description={"Bạn có chắc chắn muốn xóa công việc này ?"}
               onConfirm={async () => {
-                await deleteCompany(entity._id);
+                await deleteJob(entity._id);
                 setReload(!reload);
               }}
               okText="Xác nhận"
@@ -195,7 +192,7 @@ const JobTable = (props: IProps) => {
         </div>
 
         <div>
-          <Access permission={ALL_PERMISSIONS.COMPANIES.CREATE} hideChildren>
+          <Access permission={ALL_PERMISSIONS.JOBS.CREATE} hideChildren>
             <Button
               onClick={() => {
                 navigate.push(`/admin/jobs/upsert`);

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Metadata } from "next";
-import "tippy.js/dist/tippy.css";
+
 import "../../styles/AdminLayout.scss";
 import Sidebar from "@/components/admin/Sidebar/Sidebar";
 import StyledComponentsRegistry from "@/lib/antd.registry";

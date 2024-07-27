@@ -3,7 +3,6 @@ import "../../styles/ClientLayout.scss";
 import Header from "@/components/client/Header/Header";
 import Footer from "@/components/client/Footer/Footer";
 import { Metadata } from "next";
-import "tippy.js/dist/tippy.css";
 import { ConfigProvider } from "antd";
 import vi_VN from "antd/lib/locale/vi_VN";
 import StyledComponentsRegistry from "@/lib/antd.registry";

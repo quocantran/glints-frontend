@@ -3,6 +3,7 @@ import {
   Form,
   Input,
   Modal,
+  Select,
   Skeleton,
   Table,
   Tabs,
@@ -11,11 +12,11 @@ import {
 } from "antd";
 import { isMobile } from "react-device-detect";
 import { Result, TabsProps } from "antd";
-import { IResume } from "@/types/backend";
+import { IResume, ISkill, ISubscribers } from "@/types/backend";
 import { useState, useEffect } from "react";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import { fetchResumeByUser, updateUserPassword } from "@/config/api";
+import { createSubscriber, fetchResumeByUser, fetchSkills, updateUserPassword } from "@/config/api";
 import { SmileOutlined } from "@ant-design/icons";
 import { FormProps } from "antd/lib";
 import { useAppSelector } from "@/lib/redux/hooks";
@@ -59,13 +60,13 @@ const UserResume = (props: any) => {
       title: "Vị trí",
       dataIndex: ["jobId", "name"],
     },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-    },
   ];
 
   if (!isMobile) {
+    columns.push({
+      title: "Trạng thái",
+      dataIndex: "status",
+    })
     columns.push(
       {
         title: "Ngày rải CV",
@@ -87,6 +88,7 @@ const UserResume = (props: any) => {
         },
       }
     );
+    
   } else {
     columns.slice(0, 3);
   }
@@ -211,6 +213,93 @@ const UpdateUserPassword = (props: any) => {
   );
 };
 
+const Subscriber = (props : any) => {
+
+  const [skills, setSkills] = useState<any>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const currentEmail = useAppSelector((state) => state.auth.user?.email);
+  const [email, setEmail] = useState<string>(currentEmail || '');
+  const [loading, setLoading] = useState<boolean>(false);
+
+
+  const handleChange = (value: any) => {
+    setSelectedSkills(value);
+  }
+
+  const handleClick = async() => {
+    const data : ISubscribers = {
+      email : email,
+      skills : selectedSkills
+    }
+    
+    setLoading(true);
+    const res = await createSubscriber(data);
+    const resData = await res.json();
+    if(!res.ok){
+      notification.error({
+        message: "Đăng ký thất bại",
+        description: resData.message,
+      });
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    message.success('Đăng ký thành công!'); 
+  }
+
+  const handleGetEmail = (e : any) => {
+    setEmail(e.target.value);
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsFetching(true);
+      const res = await fetchSkills({pageSize : 100, current : 1});
+      if (res && res.data) {
+        const skillData = res.data.result as ISkill[];
+        const skillList = skillData.map((skill) => ({
+          label: skill.name,
+          value: skill._id,
+        }));
+        setSkills(skillList);
+      }
+      setIsFetching(false);
+      
+    };
+    fetchData();
+    
+  }, []);
+
+
+  return (
+    isFetching ? <Skeleton></Skeleton> :<>
+      <h2 style={{ textAlign: "center", marginBottom: 10 }}>
+        Đăng ký nhận công việc theo kỹ năng
+      </h2>
+
+      <div style = {{marginBottom : '15px'}}>
+        <Input value={email} onChange={handleGetEmail} placeholder="Nhập vào email của bạn"/>
+      </div>
+
+      <div>
+        <Select
+            mode="multiple"
+            
+            placeholder="Lựa chọn kỹ năng"
+            onChange={handleChange}
+            options={skills}
+            style={{ width: '100%' }}
+        
+          />
+      </div>
+      <Button onClick={handleClick} loading={loading} type="primary" style={{ marginTop: 10 }}>
+        Đăng ký
+      </Button>
+    </>
+  )
+}
+
 const ManageUser = (props: IProps) => {
   const { open, setOpen } = props;
 
@@ -225,6 +314,11 @@ const ManageUser = (props: IProps) => {
       label: `Thay đổi mật khẩu`,
       children: <UpdateUserPassword />,
     },
+    {
+      key: "user-subscriber",
+      label: `Đăng ký nhận công việc theo kỹ năng`,
+      children: <Subscriber />,
+    }
   ];
 
   return (

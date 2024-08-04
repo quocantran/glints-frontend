@@ -91,7 +91,7 @@
   width: 14px;
   height: 14px;
   position: absolute;
-  top: 9px;
+  top: 14px;
   right: 30px;
   color: rgb(121, 136, 153);
   z-index: 1;
@@ -101,7 +101,7 @@
   width: 14px;
   height: 14px;
   position: absolute;
-  top: 10px;
+  top: 14px;
   right: 8px;
   color: rgb(121, 136, 153);
   z-index: 1;
@@ -210,6 +210,14 @@
   }
 }
 
+.css-dev-only-do-not-override-usln0u.ant-select-single{
+  height: 40px !important;
+}
+
+.customAutoComplete {
+ height: 100px;
+}
+
 @media screen and (max-width: "768px") {
   .detail-right {
     display: none;
@@ -219,10 +227,11 @@
     display: inline-block;
   }
   .search-job {
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     padding: 0;
     svg {
-      right: 9px;
+      right: 10px;
+      top: 10px;
     }
   }
 
@@ -231,6 +240,13 @@
     font-size: 25px;
   }
 
+  .search-location{
+    svg{
+      right: 10px;
+      top: 10px;
+    }
+    
+  }
   .search-btn {
     margin-top: 10px;
     margin-left: 0;

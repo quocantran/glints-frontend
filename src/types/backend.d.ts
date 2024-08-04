@@ -33,7 +33,7 @@ export interface IAccount {
   };
 }
 
-export interface IGetAccount extends Omit<IAccount, "access_token"> {}
+export interface IGetAccount extends Omit<IAccount, "access_token"> { }
 
 export interface ICompany {
   _id?: string;
@@ -169,4 +169,25 @@ export interface IUpdateUserPassword {
 export interface IJobSuggest {
   name: string;
   location: string;
+}
+
+export interface ISkill {
+  _id?: string;
+  name: string;
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ISubscribers {
+  _id?: string;
+  email: string;
+  skills: string[];
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
 }

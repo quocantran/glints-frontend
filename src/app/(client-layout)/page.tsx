@@ -60,6 +60,7 @@ export default function Home() {
                 ).map((suggestion) => ({
                   value: suggestion,
                 }))}
+                style={{ height: '116%' }}
                 className={cx("job-input")}
                 placeholder="Tìm kiếm việc làm..."
                 onChange={(value) => setInputValue(value)}
@@ -74,6 +75,8 @@ export default function Home() {
               <Select
                 placeholder="Chọn Tỉnh/Thành Phố..."
                 className={cx("location-input")}
+                style={{ height: '116%' }}
+                suffixIcon={null}
                 onChange={(value) => setLocationValue(value)}
                 defaultValue={LIST_LOCATION[LIST_LOCATION.length - 1].value}
                 options={LIST_LOCATION}

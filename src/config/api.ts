@@ -14,6 +14,8 @@ import {
   ICreateResume,
   IUpdateUserPassword,
   IJobSuggest,
+  ISkill,
+  ISubscribers,
 } from "@/types/backend";
 import { message, notification } from "antd";
 
@@ -93,8 +95,7 @@ export const fetchUsers = async (
 ): Promise<IBackendRes<IModelPaginate<IUser>> | undefined> => {
   const regex = new RegExp(name, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/users?populate=role&pageSize=5&current=${current}${
-      name ? `&name=${regex}` : ""
+    `${BACKEND_URL}/api/v1/users?populate=role&pageSize=5&current=${current}${name ? `&name=${regex}` : ""
     }`,
     {
       method: "GET",
@@ -212,8 +213,7 @@ export const fetchCompanies = async (
 ): Promise<IBackendRes<IModelPaginate<ICompany>> | undefined> => {
   const regex = new RegExp(name, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/companies?${current ? `current=${current}` : ""}${
-      name ? `&name=${regex}` : ""
+    `${BACKEND_URL}/api/v1/companies?${current ? `current=${current}` : ""}${name ? `&name=${regex}` : ""
     }${pageSize ? `&pageSize=${pageSize}` : ""}`,
     {
       method: "GET",
@@ -329,8 +329,7 @@ export const fetchRoles = async (
 ): Promise<IBackendRes<IModelPaginate<IRole>> | undefined> => {
   const regex = new RegExp(name, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/roles${current ? `?current=${current}` : ""}${
-      name ? `&name=${regex}` : ""
+    `${BACKEND_URL}/api/v1/roles${current ? `?current=${current}` : ""}${name ? `&name=${regex}` : ""
     }`,
     {
       method: "GET",
@@ -438,10 +437,8 @@ export const fetchJobs = async (
   const sanitizedInput = name.replace(/[()\/]/g, "");
   const regex = new RegExp(sanitizedInput, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/jobs?current=${current}${
-      name ? `&name=${regex}` : ""
-    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${
-      location ? `&location=${location}` : ""
+    `${BACKEND_URL}/api/v1/jobs?current=${current}${name ? `&name=${regex}` : ""
+    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${location ? `&location=${location}` : ""
     }`,
     {
       method: "GET",
@@ -465,8 +462,7 @@ export const fetchJobsSuggest = async (
   location: string = ""
 ): Promise<IBackendRes<IJobSuggest[]>> => {
   const res = await fetch(
-    `${BACKEND_URL}/api/v1/jobs/search/suggest?name=${name}${
-      location ? `&location=${location}` : ""
+    `${BACKEND_URL}/api/v1/jobs/search/suggest?name=${name}${location ? `&location=${location}` : ""
     }`,
     {
       method: "GET",
@@ -571,8 +567,7 @@ export const fetchResumes = async (
 ): Promise<IBackendRes<IModelPaginate<IResume>> | undefined> => {
   const regex = new RegExp(status, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/resumes?current=${current}${
-      status ? `&status=${regex}` : ""
+    `${BACKEND_URL}/api/v1/resumes?current=${current}${status ? `&status=${regex}` : ""
     }&pageSize=5&populate=companyId,jobId`,
     {
       method: "GET",
@@ -662,10 +657,8 @@ export const fetchPermissions = async (
   const nameRegex = new RegExp(name, "i");
   const moduleRegex = new RegExp(module, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/permissions?current=${current}${
-      name ? `&name=${nameRegex}` : ""
-    }${module ? `&module=${moduleRegex}` : ""}${
-      pageSize ? `&pageSize=${pageSize}` : ""
+    `${BACKEND_URL}/api/v1/permissions?current=${current}${name ? `&name=${nameRegex}` : ""
+    }${module ? `&module=${moduleRegex}` : ""}${pageSize ? `&pageSize=${pageSize}` : ""
     }`,
     {
       method: "GET",
@@ -843,5 +836,52 @@ export const logout = async (): Promise<void> => {
     return;
   }
 
+  return res;
+};
+
+
+// api skills
+
+export const fetchSkills = async ({
+  current = 1,
+  name = "",
+  pageSize = 10,
+  sort = "createdAt",
+  location = ""
+}): Promise<IBackendRes<IModelPaginate<ISkill>> | undefined> => {
+  const sanitizedInput = name.replace(/[()\/]/g, "");
+  const regex = new RegExp(sanitizedInput, "i");
+  const res = await fetch(
+    `${BACKEND_URL}/api/v1/skills?current=${current}${name ? `&name=${regex}` : ""
+    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${location ? `&location=${location}` : ""
+    }`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    notification.error({
+      message: "Có lỗi xảy ra",
+      description: data.message,
+    });
+  } else {
+    return data;
+  }
+};
+
+// api subscribers
+
+export const createSubscriber = async (body: ISubscribers): Promise<Response> => {
+  const res = await fetch(`${BACKEND_URL}/api/v1/subscribers`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
   return res;
 };

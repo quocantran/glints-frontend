@@ -4,7 +4,7 @@ import classnames from "classnames/bind";
 import styles from "../../../styles/Header.module.scss";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { Avatar, Dropdown, Space, message } from "antd";
+import { Avatar, Dropdown, Skeleton, Space, message } from "antd";
 import {
   ContactsOutlined,
   DashOutlined,
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
   const isAuth = useAppSelector((state) => state?.auth.isAuthenticated);
   const user = useAppSelector((state) => state?.auth.user);
   const [open, setOpen] = useState<boolean>(false);
-
+  const loading = useAppSelector((state) => state?.auth.isLoading);
   const userRole = user?.role.name;
   const dispatch = useAppDispatch();
   const handleLogout = async () => {
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className={cx("header-right")}>
+        {loading ? <Skeleton.Avatar style={{width: '50px', height : '50px'}} active/> : <div className={cx("header-right")}>
           {isAuth ? (
             <Dropdown
               menu={{ items: itemsDropdown as any }}
@@ -103,7 +103,7 @@ const Header: React.FC = () => {
               </div>
             </>
           )}
-        </div>
+        </div>}
       </div>
       <ManageUser open={open} setOpen={setOpen} />
     </div>

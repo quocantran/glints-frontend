@@ -885,3 +885,17 @@ export const createSubscriber = async (body: ISubscribers): Promise<Response> =>
   })
   return res;
 };
+
+
+// api otps
+
+export const createOtp = async (email: string): Promise<Response> => {
+  const res = await fetch(`${BACKEND_URL}/api/v1/otps`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  })
+  return res;
+}

@@ -88,7 +88,7 @@ const UserResume = (props: any) => {
         },
       }
     );
-    
+
   } else {
     columns.slice(0, 3);
   }
@@ -213,7 +213,7 @@ const UpdateUserPassword = (props: any) => {
   );
 };
 
-const Subscriber = (props : any) => {
+const Subscriber = (props: any) => {
 
   const [skills, setSkills] = useState<any>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -227,16 +227,16 @@ const Subscriber = (props : any) => {
     setSelectedSkills(value);
   }
 
-  const handleClick = async() => {
-    const data : ISubscribers = {
-      email : email,
-      skills : selectedSkills
+  const handleClick = async () => {
+    const data: ISubscribers = {
+      email: email,
+      skills: selectedSkills
     }
-    
+
     setLoading(true);
     const res = await createSubscriber(data);
     const resData = await res.json();
-    if(!res.ok){
+    if (!res.ok) {
       notification.error({
         message: "Đăng ký thất bại",
         description: resData.message,
@@ -245,17 +245,17 @@ const Subscriber = (props : any) => {
       return;
     }
     setLoading(false);
-    message.success('Đăng ký thành công!'); 
+    message.success('Đăng ký thành công!');
   }
 
-  const handleGetEmail = (e : any) => {
+  const handleGetEmail = (e: any) => {
     setEmail(e.target.value);
   }
 
   useEffect(() => {
     const fetchData = async () => {
       setIsFetching(true);
-      const res = await fetchSkills({pageSize : 100, current : 1});
+      const res = await fetchSkills({ pageSize: 100, current: 1 });
       if (res && res.data) {
         const skillData = res.data.result as ISkill[];
         const skillList = skillData.map((skill) => ({
@@ -265,37 +265,40 @@ const Subscriber = (props : any) => {
         setSkills(skillList);
       }
       setIsFetching(false);
-      
+
     };
     fetchData();
-    
+
   }, []);
 
 
   return (
-    isFetching ? <Skeleton></Skeleton> :<>
+    isFetching ? <Skeleton></Skeleton> : <>
       <h2 style={{ textAlign: "center", marginBottom: 10 }}>
         Đăng ký nhận công việc theo kỹ năng
       </h2>
 
-      <div style = {{marginBottom : '15px'}}>
-        <Input value={email} onChange={handleGetEmail} placeholder="Nhập vào email của bạn"/>
-      </div>
+      <div style={{ maxWidth: "600px", margin: "0 auto" }}>
 
-      <div>
-        <Select
+        <div style={{ marginBottom: '15px' }}>
+          <Input value={email} onChange={handleGetEmail} placeholder="Nhập vào email của bạn" />
+        </div>
+
+        <div>
+          <Select
             mode="multiple"
-            
+
             placeholder="Lựa chọn kỹ năng"
             onChange={handleChange}
             options={skills}
             style={{ width: '100%' }}
-        
+
           />
+        </div>
+        <Button onClick={handleClick} loading={loading} type="primary" style={{ marginTop: '15px' }}>
+          Đăng ký
+        </Button>
       </div>
-      <Button onClick={handleClick} loading={loading} type="primary" style={{ marginTop: 10 }}>
-        Đăng ký
-      </Button>
     </>
   )
 }

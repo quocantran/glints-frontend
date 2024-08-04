@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _a;
 exports.__esModule = true;
-exports.setRefreshTokenAction = exports.setLogoutAction = exports.setUserLoginInfo = exports.setActiveMenu = exports.accountSlide = exports.fetchAccount = void 0;
+exports.setRefreshTokenAction = exports.setLogoutAction = exports.setUserLoginInfo = exports.setActiveMenu = exports.accountSlice = exports.fetchAccount = void 0;
 var toolkit_1 = require("@reduxjs/toolkit");
 var api_1 = require("@/config/api");
 // First, create the thunk
@@ -69,7 +69,7 @@ var initialState = {
     },
     activeMenu: "home"
 };
-exports.accountSlide = toolkit_1.createSlice({
+exports.accountSlice = toolkit_1.createSlice({
     name: "account",
     initialState: initialState,
     reducers: {
@@ -134,5 +134,5 @@ exports.accountSlide = toolkit_1.createSlice({
         });
     }
 });
-exports.setActiveMenu = (_a = exports.accountSlide.actions, _a.setActiveMenu), exports.setUserLoginInfo = _a.setUserLoginInfo, exports.setLogoutAction = _a.setLogoutAction, exports.setRefreshTokenAction = _a.setRefreshTokenAction;
-exports["default"] = exports.accountSlide.reducer;
+exports.setActiveMenu = (_a = exports.accountSlice.actions, _a.setActiveMenu), exports.setUserLoginInfo = _a.setUserLoginInfo, exports.setLogoutAction = _a.setLogoutAction, exports.setRefreshTokenAction = _a.setRefreshTokenAction;
+exports["default"] = exports.accountSlice.reducer;

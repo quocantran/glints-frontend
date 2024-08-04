@@ -53,7 +53,7 @@ const initialState: IState = {
   activeMenu: "home",
 };
 
-export const accountSlide = createSlice({
+export const accountSlice = createSlice({
   name: "account",
   initialState,
 
@@ -125,6 +125,6 @@ export const {
   setUserLoginInfo,
   setLogoutAction,
   setRefreshTokenAction,
-} = accountSlide.actions;
+} = accountSlice.actions;
 
-export default accountSlide.reducer;
+export default accountSlice.reducer;

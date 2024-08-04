@@ -5,15 +5,17 @@ import styles from "../../styles/Home.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationArrow, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { LIST_LOCATION, SKILL_LIST } from "@/config/utils";
-import { AutoComplete, Select, message } from "antd";
+import { AutoComplete, Select, Skeleton, message } from "antd";
 import { useRouter } from "next/navigation";
 import DebounceInput from "@/hooks/debounce.input";
 import { fetchJobsSuggest } from "@/config/api";
+import { set } from "lodash";
 
 const cx = classNames.bind(styles);
 
 export default function Home() {
   const [inputValue, setInputValue] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [locationValue, setLocationValue] = useState<string>("");
   const [searchReuslt, setSearchResult] = useState<string[]>([]);
   const navigate = useRouter();
@@ -32,11 +34,13 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const res = await fetchJobsSuggest(debounceValue, locationValue);
       if (res && res.data) {
         let jobNameList = res.data.map((job) => job.name);
         setSearchResult(jobNameList);
       }
+      setLoading(false);
     };
     if (debounceValue) {
       fetchData();
@@ -56,13 +60,15 @@ export default function Home() {
               <AutoComplete
                 options={(searchReuslt.length > 0
                   ? searchReuslt
-                  : SKILL_LIST
+                  : []
                 ).map((suggestion) => ({
                   value: suggestion,
                 }))}
                 style={{ height: '116%' }}
                 className={cx("job-input")}
                 placeholder="Tìm kiếm việc làm..."
+                notFoundContent={loading ? <Skeleton active/> : <p> Không có kết quả </p>}
+                
                 onChange={(value) => setInputValue(value)}
               />
             </div>

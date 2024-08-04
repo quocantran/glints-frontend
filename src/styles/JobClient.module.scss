@@ -5,12 +5,12 @@
 }
 
 .job-content {
-  display: flex;
   border-top: 2px solid rgb(243, 243, 243);
   margin-top: 20px;
 }
 
 .job-select {
+  width: 33%;
   h4 {
     margin-bottom: 10px;
   }
@@ -19,11 +19,12 @@
 .job-item {
   margin-top: 20px;
   height: 100vh;
+  flex: 0.5;
   overflow-y: auto;
 }
 
 .job-list {
-  flex: 0.7;
+  display: flex;
 }
 
 .item-content {
@@ -144,5 +145,12 @@
     h1 {
       text-align: center;
     }
+  }
+
+  .job-list {
+    display: block;
+  }
+  .job-select {
+    width: 100%;
   }
 }

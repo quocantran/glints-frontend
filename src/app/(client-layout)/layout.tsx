@@ -8,6 +8,7 @@ import vi_VN from "antd/lib/locale/vi_VN";
 import StyledComponentsRegistry from "@/lib/antd.registry";
 import StoreProvider from "../StoreProvider";
 import LayoutApp from "@/components/layout/LayoutApp";
+import Chat from "@/components/client/Chat/Chat.modal";
 
 export const metadata: Metadata = {
   title: "Glints - Kênh Tuyển Dụng - Trang Tìm Kiếm Việc Làm Uy Tín",
@@ -30,6 +31,10 @@ export default function RootLayout({
               <StyledComponentsRegistry>
                 <LayoutApp>
                   <Header />
+                  <div>
+                    <Chat />
+
+                  </div>
                   {children}
 
                   <Footer />

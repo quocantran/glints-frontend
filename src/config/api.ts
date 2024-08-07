@@ -16,6 +16,8 @@ import {
   IJobSuggest,
   ISkill,
   ISubscribers,
+  IChat,
+  IFile,
 } from "@/types/backend";
 import { message, notification } from "antd";
 
@@ -897,5 +899,57 @@ export const createOtp = async (email: string): Promise<Response> => {
     },
     body: JSON.stringify({ email }),
   })
+  return res;
+}
+
+//api files
+
+export const uploadFile = async (file: File): Promise<IBackendRes<IFile>> => {
+  const formData = new FormData();
+  formData.append("fileUpload", file);
+  const res = await fetch(`${BACKEND_URL}/api/v1/files/upload`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    },
+    body: formData,
+  });
+  return await res.json();
+}
+
+
+// api chats
+
+export const fetchChats = async ({
+  current = 1,
+  pageSize = 100
+} = {}): Promise<IBackendRes<IModelPaginate<IChat>>> => {
+  const res = await fetch(`${BACKEND_URL}/api/v1/chats?current=${current}&pageSize=${pageSize}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return await res.json();
+}
+
+export const createChat = async (body: IChat): Promise<IBackendRes<IChat>> => {
+  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/chats`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  return res;
+}
+
+export const deleteChat = async (id: string): Promise<IBackendRes<any>> => {
+  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/chats/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   return res;
 }

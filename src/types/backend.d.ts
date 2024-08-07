@@ -1,5 +1,7 @@
 export interface IBackendRes<T> {
   statusCode: number | string;
+  message?: string;
+  error?: string;
   data?: T;
 }
 
@@ -185,6 +187,24 @@ export interface ISubscribers {
   _id?: string;
   email: string;
   skills: string[];
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IFile {
+  url: string;
+}
+
+export interface IChat {
+  _id?: string;
+  name: string;
+  type: string;
+  fileUrl?: string;
+  content: string;
+  userId: string;
   createdBy?: string;
   isDeleted?: boolean;
   deletedAt?: boolean | null;

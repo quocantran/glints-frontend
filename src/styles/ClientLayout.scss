@@ -42,3 +42,18 @@ a[href] {
 input {
   outline: none;
 }
+
+.react-input-emoji--input {
+  width: 365px !important;
+}
+
+.react-emoji {
+  width: 92% !important;
+}
+
+@media screen and (max-width: 768px) {
+  .react-input-emoji--input {
+    width: 270px !important;
+  }
+
+}

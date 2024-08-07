@@ -5,6 +5,7 @@ import { Skeleton, message } from "antd";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/redux/hooks";
+import Chat from "../client/Chat/Chat.modal";
 
 interface IProps {
   children: React.ReactNode;
@@ -20,7 +21,10 @@ const LayoutApp = (props: IProps) => {
     dispatch(fetchAccount());
   }, [pathname]);
 
-  return <>{children}</>;
+  return (<>
+    {children}
+
+  </>)
 };
 
 export default LayoutApp;

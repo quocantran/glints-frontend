@@ -9,10 +9,7 @@ import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import {
-  fetchJobs,
-  deleteJob
-} from "@/config/api";
+import { fetchJobs, deleteJob } from "@/config/api";
 import Access from "../Access/Access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 
@@ -159,7 +156,7 @@ const JobTable = (props: IProps) => {
 
   const handleSubmit = async () => {
     setIsFetching(true);
-    const res = await fetchJobs(current, search);
+    const res = await fetchJobs({ current, name: search });
     if (res) {
       setJobs(res.data?.result || []);
       setSearch("");

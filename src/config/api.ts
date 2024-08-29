@@ -18,6 +18,8 @@ import {
   ISubscribers,
   IChat,
   IFile,
+  INotification,
+  IElasticsearchResult,
 } from "@/types/backend";
 import { message, notification } from "antd";
 
@@ -97,7 +99,8 @@ export const fetchUsers = async (
 ): Promise<IBackendRes<IModelPaginate<IUser>> | undefined> => {
   const regex = new RegExp(name, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/users?populate=role&pageSize=5&current=${current}${name ? `&name=${regex}` : ""
+    `${BACKEND_URL}/api/v1/users?populate=role&pageSize=5&current=${current}${
+      name ? `&name=${regex}` : ""
     }`,
     {
       method: "GET",
@@ -215,7 +218,8 @@ export const fetchCompanies = async (
 ): Promise<IBackendRes<IModelPaginate<ICompany>> | undefined> => {
   const regex = new RegExp(name, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/companies?${current ? `current=${current}` : ""}${name ? `&name=${regex}` : ""
+    `${BACKEND_URL}/api/v1/companies?${current ? `current=${current}` : ""}${
+      name ? `&name=${regex}` : ""
     }${pageSize ? `&pageSize=${pageSize}` : ""}`,
     {
       method: "GET",
@@ -260,6 +264,50 @@ export const fetchCompanyById = async (
   });
   const data = await res.json();
   return data;
+};
+
+export const followCompany = async (id: string) => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/companies/follow`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify({ companyId: id }),
+    }
+  );
+
+  if (res.statusCode === 400) {
+    notification.error({
+      message: "Có lỗi xảy ra",
+      description: res.message,
+    });
+  }
+  return res;
+};
+
+export const unFollowCompany = async (id: string) => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/companies/unfollow`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify({ companyId: id }),
+    }
+  );
+
+  if (res.statusCode === 400) {
+    notification.error({
+      message: "Có lỗi xảy ra",
+      description: res.message,
+    });
+  }
+  return res;
 };
 
 export const createCompany = async (body: ICompany) => {
@@ -314,6 +362,7 @@ export const deleteCompany = async (id: string) => {
       },
     }
   );
+  await deleteDocumentElastic({ index: "companies", id });
   if (!res) {
     notification.error({
       message: "Có lỗi xảy ra",
@@ -331,7 +380,8 @@ export const fetchRoles = async (
 ): Promise<IBackendRes<IModelPaginate<IRole>> | undefined> => {
   const regex = new RegExp(name, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/roles${current ? `?current=${current}` : ""}${name ? `&name=${regex}` : ""
+    `${BACKEND_URL}/api/v1/roles${current ? `?current=${current}` : ""}${
+      name ? `&name=${regex}` : ""
     }`,
     {
       method: "GET",
@@ -429,18 +479,24 @@ export const deleteRole = async (id: string) => {
 
 // API JOBS
 
-export const fetchJobs = async (
-  current: number = 1,
-  name: string = "",
-  sort: string = "createdAt",
-  location: string = "",
-  pageSize: number = 10
-): Promise<IBackendRes<IModelPaginate<IJob>> | undefined> => {
+export const fetchJobs = async ({
+  current = 1,
+  name = "",
+  sort = "createdAt",
+  location = "",
+  pageSize = 10,
+  companyId = "",
+  companyName = "",
+}): Promise<IBackendRes<IModelPaginate<IJob>> | undefined> => {
   const sanitizedInput = name.replace(/[()\/]/g, "");
   const regex = new RegExp(sanitizedInput, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/jobs?current=${current}${name ? `&name=${regex}` : ""
-    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${location ? `&location=${location}` : ""
+    `${BACKEND_URL}/api/v1/jobs?current=${current}${
+      name ? `&name=${regex}` : ""
+    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${
+      location ? `&location=${location}` : ""
+    }${companyId ? `&companyId=${companyId}` : ""}${
+      companyName ? `&companyName=${companyName}` : ""
     }`,
     {
       method: "GET",
@@ -464,7 +520,8 @@ export const fetchJobsSuggest = async (
   location: string = ""
 ): Promise<IBackendRes<IJobSuggest[]>> => {
   const res = await fetch(
-    `${BACKEND_URL}/api/v1/jobs/search/suggest?name=${name}${location ? `&location=${location}` : ""
+    `${BACKEND_URL}/api/v1/jobs/search/suggest?name=${name}${
+      location ? `&location=${location}` : ""
     }`,
     {
       method: "GET",
@@ -569,7 +626,8 @@ export const fetchResumes = async (
 ): Promise<IBackendRes<IModelPaginate<IResume>> | undefined> => {
   const regex = new RegExp(status, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/resumes?current=${current}${status ? `&status=${regex}` : ""
+    `${BACKEND_URL}/api/v1/resumes?current=${current}${
+      status ? `&status=${regex}` : ""
     }&pageSize=5&populate=companyId,jobId`,
     {
       method: "GET",
@@ -659,8 +717,10 @@ export const fetchPermissions = async (
   const nameRegex = new RegExp(name, "i");
   const moduleRegex = new RegExp(module, "i");
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/permissions?current=${current}${name ? `&name=${nameRegex}` : ""
-    }${module ? `&module=${moduleRegex}` : ""}${pageSize ? `&pageSize=${pageSize}` : ""
+    `${BACKEND_URL}/api/v1/permissions?current=${current}${
+      name ? `&name=${nameRegex}` : ""
+    }${module ? `&module=${moduleRegex}` : ""}${
+      pageSize ? `&pageSize=${pageSize}` : ""
     }`,
     {
       method: "GET",
@@ -789,14 +849,16 @@ export const callRegister = async (body: IUser) => {
   return data;
 };
 
-export const callFetchAccount = async (): Promise<
-  IBackendRes<IGetAccount> | undefined
-> => {
+export const callFetchAccount = async (
+  accessToken = ""
+): Promise<IBackendRes<IGetAccount> | undefined> => {
   const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/auth/account`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      Authorization: `Bearer ${
+        localStorage.getItem("access_token") ?? accessToken
+      }`,
     },
   });
   if (!res) {
@@ -841,7 +903,6 @@ export const logout = async (): Promise<void> => {
   return res;
 };
 
-
 // api skills
 
 export const fetchSkills = async ({
@@ -849,13 +910,15 @@ export const fetchSkills = async ({
   name = "",
   pageSize = 10,
   sort = "createdAt",
-  location = ""
+  location = "",
 }): Promise<IBackendRes<IModelPaginate<ISkill>> | undefined> => {
   const sanitizedInput = name.replace(/[()\/]/g, "");
   const regex = new RegExp(sanitizedInput, "i");
   const res = await fetch(
-    `${BACKEND_URL}/api/v1/skills?current=${current}${name ? `&name=${regex}` : ""
-    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${location ? `&location=${location}` : ""
+    `${BACKEND_URL}/api/v1/skills?current=${current}${
+      name ? `&name=${regex}` : ""
+    }${pageSize ? `&pageSize=${pageSize}` : 10}${sort ? `&sort=${sort}` : ""}${
+      location ? `&location=${location}` : ""
     }`,
     {
       method: "GET",
@@ -877,17 +940,18 @@ export const fetchSkills = async ({
 
 // api subscribers
 
-export const createSubscriber = async (body: ISubscribers): Promise<Response> => {
+export const createSubscriber = async (
+  body: ISubscribers
+): Promise<Response> => {
   const res = await fetch(`${BACKEND_URL}/api/v1/subscribers`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
-  })
+  });
   return res;
 };
-
 
 // api otps
 
@@ -898,9 +962,9 @@ export const createOtp = async (email: string): Promise<Response> => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email }),
-  })
+  });
   return res;
-}
+};
 
 //api files
 
@@ -915,23 +979,30 @@ export const uploadFile = async (file: File): Promise<IBackendRes<IFile>> => {
     body: formData,
   });
   return await res.json();
-}
-
+};
 
 // api chats
 
 export const fetchChats = async ({
-  current = 1,
-  pageSize = 100
-} = {}): Promise<IBackendRes<IModelPaginate<IChat>>> => {
-  const res = await fetch(`${BACKEND_URL}/api/v1/chats?current=${current}&pageSize=${pageSize}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  current,
+  pageSize = 50,
+}: {
+  current?: number;
+  pageSize?: number;
+}): Promise<IBackendRes<IModelPaginate<IChat>>> => {
+  const res = await fetch(
+    `${BACKEND_URL}/api/v1/chats?pageSize=${pageSize}&${
+      current ? `current=${current}` : ""
+    }`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return await res.json();
-}
+};
 
 export const createChat = async (body: IChat): Promise<IBackendRes<IChat>> => {
   const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/chats`, {
@@ -942,7 +1013,7 @@ export const createChat = async (body: IChat): Promise<IBackendRes<IChat>> => {
     body: JSON.stringify(body),
   });
   return res;
-}
+};
 
 export const deleteChat = async (id: string): Promise<IBackendRes<any>> => {
   const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/chats/${id}`, {
@@ -952,4 +1023,118 @@ export const deleteChat = async (id: string): Promise<IBackendRes<any>> => {
     },
   });
   return res;
-}
+};
+
+// api notifications
+
+export const fetchNotifications = async ({
+  current = 1,
+  pageSize = 50,
+}): Promise<IBackendRes<IModelPaginate<INotification>>> => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/notifications`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        current,
+        pageSize,
+      }),
+    }
+  );
+  return res;
+};
+
+// api elasticsearch
+
+export const searchWithElastic = async (body: {
+  index: string;
+  query: string;
+  size?: string;
+  from?: string;
+}) => {
+  const res = await fetch(`${BACKEND_URL}/api/v1/elasticsearchs/search`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  let data;
+  if (body.index === "companies") {
+    data = (await res.json()) as IElasticsearchResult<ICompany>;
+  } else if (body.index === "jobs") {
+    data = (await res.json()) as IElasticsearchResult<IJob>;
+  }
+  return data;
+};
+
+export const getDocumentsElastic = async (body: {
+  index: string;
+  from: string;
+  size: string;
+}) => {
+  const res = await fetch(`${BACKEND_URL}/api/v1/elasticsearchs/get-paginate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  let data;
+  if (body.index === "companies") {
+    data = (await res.json()) as IElasticsearchResult<ICompany>;
+  } else if (body.index === "jobs") {
+    data = (await res.json()) as IElasticsearchResult<IJob>;
+  }
+  return data;
+};
+
+export const createDocumentElastic = async (body: {
+  index: string;
+  document: any;
+}) => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/elasticsearchs/create`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  if (res.statusCode !== 201) {
+    notification.error({
+      message: "Có lỗi xảy ra",
+      description: res.message,
+    });
+    return;
+  }
+  return res;
+};
+
+export const deleteDocumentElastic = async (body: {
+  index: string;
+  id: string;
+}) => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/elasticsearchs/${body.index}/${body.id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (res.statusCode !== 200) {
+    notification.error({
+      message: "Có lỗi xảy ra",
+      description: res.message,
+    });
+    return;
+  }
+  return res;
+};

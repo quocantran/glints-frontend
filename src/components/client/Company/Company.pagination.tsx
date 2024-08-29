@@ -11,10 +11,14 @@ interface IProps {
     pages: number;
     total: number;
   };
+
+  setMeta: any;
+
+  setCurrent: any;
 }
 
 const CompanyPagination = (props: IProps) => {
-  const { meta } = props;
+  const { meta, setMeta, setCurrent } = props;
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -22,6 +26,8 @@ const CompanyPagination = (props: IProps) => {
     if (pagination) {
       const params = new URLSearchParams(searchParams);
       params.set("page", pagination);
+      setMeta({ ...meta, current: pagination });
+      setCurrent(pagination);
       replace(`${pathname}?${params.toString()}`);
     }
   };

@@ -19,7 +19,7 @@ const Jobs = (props: any) => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await fetchJobs(current);
+      const res = await fetchJobs({ current: current });
       setJobs(res?.data?.result || []);
       setMeta(res?.data?.meta);
       setLoading(false);

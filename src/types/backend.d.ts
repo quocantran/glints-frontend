@@ -15,6 +15,30 @@ export interface IModelPaginate<T> {
   result: T[];
 }
 
+export interface IElasticsearchResult<T> {
+  statusCode: number | string;
+  message?: string;
+  data: {
+    total: {
+      value: number;
+    };
+
+    hits: [
+      {
+        _id: string;
+        _source: T;
+      }
+    ];
+  };
+}
+
+export interface IMeta {
+  current: number;
+  pageSize: number;
+  pages: number;
+  total: number;
+}
+
 export interface IAccount {
   access_token: string;
   user: {
@@ -35,7 +59,7 @@ export interface IAccount {
   };
 }
 
-export interface IGetAccount extends Omit<IAccount, "access_token"> { }
+export interface IGetAccount extends Omit<IAccount, "access_token"> {}
 
 export interface ICompany {
   _id?: string;
@@ -43,6 +67,7 @@ export interface ICompany {
   address: string;
   logo?: string;
   description?: string;
+  usersFollow?: string[];
   createdBy?: string;
   isDeleted?: boolean;
   deletedAt?: boolean | null;
@@ -205,6 +230,23 @@ export interface IChat {
   fileUrl?: string;
   content: string;
   userId: string;
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface INotification {
+  _id?: string;
+  senderId?: string;
+  type: string;
+  content: string;
+  receiverId: string;
+  options: {
+    jobId?: string;
+  };
+  isActive?: boolean;
   createdBy?: string;
   isDeleted?: boolean;
   deletedAt?: boolean | null;

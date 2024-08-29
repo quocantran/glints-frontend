@@ -5,7 +5,7 @@ import { Skeleton, message } from "antd";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/redux/hooks";
-import Chat from "../client/Chat/Chat.modal";
+import socket from "@/utils/socket";
 
 interface IProps {
   children: React.ReactNode;
@@ -15,16 +15,16 @@ const LayoutApp = (props: IProps) => {
   const { children } = props;
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-  const isLoading = useAppSelector((state) => state.auth.isLoading);
-
+  useEffect(() => {
+    socket.on("notification", (payload) => {
+      console.log("Received notification:", payload);
+    });
+  }, []);
   useEffect(() => {
     dispatch(fetchAccount());
   }, [pathname]);
 
-  return (<>
-    {children}
-
-  </>)
+  return <>{children}</>;
 };
 
 export default LayoutApp;

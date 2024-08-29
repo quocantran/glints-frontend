@@ -7,7 +7,11 @@ import {
   ProFormTextArea,
 } from "@ant-design/pro-components";
 import { ICompany } from "@/types/backend";
-import { createCompany, updateCompany } from "@/config/api";
+import {
+  createCompany,
+  createDocumentElastic,
+  updateCompany,
+} from "@/config/api";
 import { useEffect, useState } from "react";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import dynamic from "next/dynamic";
@@ -81,8 +85,13 @@ const CompanyModal = (props: IProps) => {
       };
 
       const res = await updateCompany(company._id, company);
+      const companiesIndex = {
+        index: "companies",
+        document: company,
+      };
+      const createSuccess = await createDocumentElastic(companiesIndex);
 
-      if (res) {
+      if (res && createSuccess) {
         message.success(`Cập nhật công ty (${company.name}) thành công`);
         setOpenModal(false);
         setDataInit(null);
@@ -92,16 +101,26 @@ const CompanyModal = (props: IProps) => {
       }
     } else {
       //create
-      const company = {
+      const company: ICompany = {
+        _id: "",
         name,
         address,
         description: value,
         logo: logo,
       };
+      const { _id, ...dataCreate } = company;
 
-      const res = await createCompany(company);
+      const res = await createCompany(dataCreate);
 
-      if (res) {
+      company._id = res?.data._id;
+
+      const companiesIndex = {
+        index: "companies",
+        document: company,
+      };
+      const createSuccess = await createDocumentElastic(companiesIndex);
+
+      if (res && createSuccess) {
         message.success(`Thêm mới công ty (${company.name}) thành công`);
         setOpenModal(false);
         setValue("");

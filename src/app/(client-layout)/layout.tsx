@@ -9,6 +9,7 @@ import StyledComponentsRegistry from "@/lib/antd.registry";
 import StoreProvider from "../StoreProvider";
 import LayoutApp from "@/components/layout/LayoutApp";
 import Chat from "@/components/client/Chat/Chat.modal";
+import socket from "@/utils/socket";
 
 export const metadata: Metadata = {
   title: "Glints - Kênh Tuyển Dụng - Trang Tìm Kiếm Việc Làm Uy Tín",
@@ -33,7 +34,6 @@ export default function RootLayout({
                   <Header />
                   <div>
                     <Chat />
-
                   </div>
                   {children}
 

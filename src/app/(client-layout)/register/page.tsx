@@ -25,22 +25,12 @@ const Register = () => {
   const navigate = useRouter();
 
   const handleSubmit = async (values: IUser) => {
-    const { name, email, password, age, gender, address } = values;
     setIsSubmit(true);
     const res = await callRegister(values);
     setIsSubmit(false);
     if (res?.data?._id) {
       message.success("Đăng ký tài khoản thành công!");
       navigate.push("/login");
-    } else {
-      notification.error({
-        message: "Có lỗi xảy ra",
-        description:
-          res.message && Array.isArray(res.message)
-            ? res.message[0]
-            : res.message,
-        duration: 5,
-      });
     }
   };
 

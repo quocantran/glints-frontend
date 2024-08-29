@@ -70,14 +70,13 @@ const JobClient = (props: any) => {
     if (current > meta?.pages) return;
     const fetchData = async (page: number) => {
       if (current == 1) setLoading(true);
-      const res = await fetchJobs(current, name, sort, location);
+      const res = await fetchJobs({ current, name, sort, location });
       setShouldRender(true);
       if (res?.data?.meta) setMeta(res?.data?.meta);
       if (res?.data?.result) {
         setJobs((prevJobs) => [...prevJobs, ...(res?.data?.result as IJob[])]);
         setLoading(false);
       }
-      
     };
 
     fetchData(current);
@@ -91,7 +90,7 @@ const JobClient = (props: any) => {
     setCurrent(1);
     const fetchData = async (page: number) => {
       setLoading(true);
-      const res = await fetchJobs(1, "", sort);
+      const res = await fetchJobs({ current: 1, sort: sort });
       if (res?.data?.result) {
         setJobs(res?.data?.result as IJob[]);
         setLoading(false);
@@ -123,7 +122,9 @@ const JobClient = (props: any) => {
     };
   });
 
-  return !shouldRender ? <></> : !jobs.length ? (
+  return !shouldRender ? (
+    <></>
+  ) : !jobs.length ? (
     <Result
       status="404"
       title="Không tìm thấy công việc"
@@ -141,19 +142,21 @@ const JobClient = (props: any) => {
           <h1>Gợi ý công việc dành cho bạn</h1>
         </div>
         <div className={cx("job-content")}>
-            <div className={cx("job-select")}>
-              <h4>Sắp xếp theo</h4>
-              <Select
-                defaultValue={sort}
-                placeholder="Chọn thứ tự sắp xếp"
-                options={options}
-                onChange={(value) => setSort(value)}
-                style={{ width: "100%" }}
-              />
-            </div>
-          {loading ? <Skeleton style={{marginTop: '25px'}} active/> : (<div className={cx("job-list")}>
-            
-            <div className={cx("job-item")} ref={divRef}>
+          <div className={cx("job-select")}>
+            <h4>Sắp xếp theo</h4>
+            <Select
+              defaultValue={sort}
+              placeholder="Chọn thứ tự sắp xếp"
+              options={options}
+              onChange={(value) => setSort(value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+          {loading ? (
+            <Skeleton style={{ marginTop: "25px" }} active />
+          ) : (
+            <div className={cx("job-list")}>
+              <div className={cx("job-item")} ref={divRef}>
                 {jobs?.map((job) => {
                   return (
                     <Card
@@ -204,72 +207,71 @@ const JobClient = (props: any) => {
                   );
                 })}
               </div>
-              
-                <div className={cx("job-description")}>
-                  <div className={cx("header")}>
-                    <div className={cx("header-info")}>
-                      <img src={jobSelect?.company?.logo} alt="logo" />
-    
-                      <div className={cx("company")}>
-                        <h3
-                          onClick={() => {
-                            navigate.push(`/jobs/${jobSelect?._id}`);
-                          }}
-                        >
-                          {jobSelect?.name}
-                        </h3>
-    
-                        <Link href={`/companies/${jobSelect?.company?._id}`}>
-                          {jobSelect?.company?.name}
-                        </Link>
-                      </div>
+
+              <div className={cx("job-description")}>
+                <div className={cx("header")}>
+                  <div className={cx("header-info")}>
+                    <img src={jobSelect?.company?.logo} alt="logo" />
+
+                    <div className={cx("company")}>
+                      <h3
+                        onClick={() => {
+                          navigate.push(`/jobs/${jobSelect?._id}`);
+                        }}
+                      >
+                        {jobSelect?.name}
+                      </h3>
+
+                      <Link href={`/companies/${jobSelect?.company?._id}`}>
+                        {jobSelect?.company?.name}
+                      </Link>
                     </div>
-                    <button onClick={handleClick} className={cx("submit-job")}>
-                      Ứng tuyển nhanh
-                    </button>
                   </div>
-    
-                  <div className={cx("job-info")}>
-                    <Tag color="rgb(100, 100, 100)">
-                      <FontAwesomeIcon icon={faClock} /> Đăng{" "}
-                      {dayjs(jobSelect?.createdAt).fromNow()}
-                    </Tag>
-                    <Tag color="green">
-                      <FontAwesomeIcon icon={faClock} /> Cập nhật{" "}
-                      {dayjs(jobSelect?.updatedAt).fromNow()}
-                    </Tag>
-    
-                    <h3 className={cx("job-title")}>Thông tin công việc</h3>
-                    <Tag color="green">
-                      {"₫" + formatNumberToMillions(jobSelect?.salary as number)}
-                    </Tag>
-                    <Tag color="blue">{`Trình độ ${jobSelect?.level}`}</Tag>
-                    <Tag color="rgb(100, 100, 100)">{jobSelect?.location}</Tag>
-                    <h3>Số lượng tuyển</h3>
-                    <Tag color="blue">{`${jobSelect?.quantity} người`}</Tag>
-    
-                    <h3>Skills</h3>
-                    {jobSelect?.skills.map((skill, idx) => {
-                      return (
-                        <Tag key={skill} color="blue" bordered>
-                          {skill}
-                        </Tag>
-                      );
-                    })}
-                    <h3>{`Chi tiết công việc ${jobSelect?.name} tại ${jobSelect?.company?.name}`}</h3>
-                    <div
-                      className={cx("job-detail")}
-                      dangerouslySetInnerHTML={{
-                        __html: jobSelect?.description as string,
-                      }}
-                    />
-                  </div>
+                  <button onClick={handleClick} className={cx("submit-job")}>
+                    Ứng tuyển nhanh
+                  </button>
                 </div>
-            </div>)}
-          </div>
-        
-          
-          
+
+                <div className={cx("job-info")}>
+                  <Tag color="rgb(100, 100, 100)">
+                    <FontAwesomeIcon icon={faClock} /> Đăng{" "}
+                    {dayjs(jobSelect?.createdAt).fromNow()}
+                  </Tag>
+                  <Tag color="green">
+                    <FontAwesomeIcon icon={faClock} /> Cập nhật{" "}
+                    {dayjs(jobSelect?.updatedAt).fromNow()}
+                  </Tag>
+
+                  <h3 className={cx("job-title")}>Thông tin công việc</h3>
+                  <Tag color="green">
+                    {"₫" + formatNumberToMillions(jobSelect?.salary as number)}{" "}
+                    triệu
+                  </Tag>
+                  <Tag color="blue">{`Trình độ ${jobSelect?.level}`}</Tag>
+                  <Tag color="rgb(100, 100, 100)">{jobSelect?.location}</Tag>
+                  <h3>Số lượng tuyển</h3>
+                  <Tag color="blue">{`${jobSelect?.quantity} người`}</Tag>
+
+                  <h3>Skills</h3>
+                  {jobSelect?.skills.map((skill, idx) => {
+                    return (
+                      <Tag key={skill} color="blue" bordered>
+                        {skill}
+                      </Tag>
+                    );
+                  })}
+                  <h3>{`Chi tiết công việc ${jobSelect?.name} tại ${jobSelect?.company?.name}`}</h3>
+                  <div
+                    className={cx("job-detail")}
+                    dangerouslySetInnerHTML={{
+                      __html: jobSelect?.description as string,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <ResumeModalClient
           openModal={openModal}

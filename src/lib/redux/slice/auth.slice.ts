@@ -73,6 +73,7 @@ export const accountSlice = createSlice({
     setLogoutAction: (state, action) => {
       localStorage.removeItem("access_token");
       state.isAuthenticated = false;
+      localStorage.removeItem("userId");
       state.user = {
         _id: "",
         email: "",

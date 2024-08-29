@@ -40,6 +40,7 @@ import { DebounceSelect } from "@/hooks/debounce.select";
 import { ICompanySelect } from "../Company/Company.modal";
 import dayjs from "dayjs";
 import { useRouter, useSearchParams } from "next/navigation";
+import socket from "@/utils/socket";
 const JobUpsert = (props: any) => {
   const [companies, setCompanies] = useState<ICompanySelect[]>([]);
 
@@ -153,6 +154,12 @@ const JobUpsert = (props: any) => {
       const res = await createJob(job);
       if (res.data) {
         message.success(`Tạo mới công việc ${job.name} thành công`);
+
+        socket.emit("notification", {
+          senderId: job.company._id,
+          jobName: job.name,
+          jobId: res.data._id,
+        });
         navigate.push("/admin/jobs");
       }
     }

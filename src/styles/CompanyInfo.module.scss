@@ -69,7 +69,7 @@
   display: block;
   flex: 1 auto;
   max-width: 100%;
-  bottom: 9rem;
+  bottom: 7rem;
   position: absolute;
   h1 {
     -webkit-line-clamp: 2;
@@ -86,6 +86,14 @@
   }
   p {
     color: #fff;
+  }
+}
+
+.users-follow {
+  color: #fff;
+  margin-top: 10px;
+  svg {
+    margin-right: 20px;
   }
 }
 
@@ -148,6 +156,245 @@
   margin-top: 30px;
 }
 
+.btn-follow {
+  position: absolute;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+  color: #00b14f;
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+  height: 48px;
+  justify-content: space-evenly;
+  line-height: 24px;
+  width: 194px;
+  top: 60%;
+  right: 40px;
+  transition: background-color 0.2s ease-in;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e5f7ed;
+  }
+}
+
+.company-job {
+  margin-top: 35px;
+}
+
+.job-search {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  align-items: center;
+  border: 1px solid #e9eaec;
+  border-radius: 6px;
+  display: flex;
+  gap: 6px;
+  padding: 13px;
+  flex: 0.7 1;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: #333333;
+    opacity: 0.6;
+    font-weight: 400;
+  }
+
+  input {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    width: 100%;
+  }
+}
+
+.btn-search {
+  align-items: center;
+  background: #00b14f;
+  border-radius: 8px;
+  color: #fff;
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+  gap: 11px;
+  line-height: 24px;
+  padding: 11px 30px;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: none;
+  cursor: pointer;
+}
+
+.job-item {
+  background-color: #fff;
+  border: 1px solid #f4f4f4;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  grid-template-columns: 1fr 5fr;
+  margin: auto auto 16px;
+  padding: 12px;
+  position: relative;
+  transition: all 0.1s;
+  transition: background-color 0.2s ease-in;
+
+  &:hover {
+    background-color: #f6f6f6;
+    .job-name {
+      color: #00b14f;
+    }
+  }
+
+  img {
+    width: 120px;
+    height: 120px;
+    border: 1px solid #e9eaec;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+}
+
+.job-content {
+  display: inline-grid;
+  gap: 12px;
+  width: 100%;
+}
+
+.body-content {
+  min-width: 11vh;
+}
+
+.title-block {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.job-name {
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #212f3f;
+  display: -webkit-box;
+  flex: 1;
+  font-weight: 600;
+  line-height: 0;
+  transition: all 0.1s ease-in;
+  margin-bottom: 4px;
+  margin-right: 24px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  overflow: hidden;
+}
+
+.job-company {
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  color: #424e5c;
+  display: -webkit-box;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-top: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.job-info {
+  align-items: flex-end;
+  -moz-column-gap: 24px;
+  column-gap: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.job-location {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  span {
+    background: #e9eaec;
+    border-radius: 3px;
+    color: #212f3f;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 4px 8px;
+  }
+}
+
+.box-right {
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  text-align: right;
+  p {
+    align-items: center;
+    color: #00b14f;
+    display: flex;
+    font-size: 16px;
+    font-weight: 600;
+    gap: 10px;
+    justify-content: flex-end;
+    line-height: 20px;
+    margin-bottom: 0;
+    margin-top: 0;
+    white-space: nowrap;
+  }
+}
+
+.view-more {
+  text-align: center;
+}
+
+.paginate {
+  align-items: center;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  button {
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    align-items: center;
+    border: 1px solid #00b14f;
+    border-radius: 50%;
+    color: #00b14f;
+    display: inline-flex;
+    height: 32px;
+    justify-content: center;
+    width: 32px;
+    background-color: #fff;
+    transition: all 0.2s ease-in;
+    cursor: pointer;
+    &:hover {
+      background-color: #00b14f;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
 @media screen and (max-width: 768px) {
   .company-description {
     display: block;
@@ -187,5 +434,10 @@
 
   .title {
     border-radius: 0;
+  }
+
+  .btn-follow {
+    right: 25%;
+    top: 220%;
   }
 }

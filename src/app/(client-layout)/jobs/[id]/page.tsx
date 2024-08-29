@@ -23,7 +23,7 @@ const cx = classNames.bind(styles);
 
 const JobInfo = async (props: any) => {
   const res = await fetchJobById(props?.params?.id);
-  return res?.statusCode !== 200 ? (
+  return res?.data == null ? (
     <Result
       status="404"
       title="404"
@@ -49,7 +49,8 @@ const JobInfo = async (props: any) => {
                   <div className={cx("item-content")}>
                     <div>Mức lương</div>
                     <span>
-                      {formatNumberToMillions(res?.data?.salary as number)}
+                      {formatNumberToMillions(res?.data?.salary as number)}{" "}
+                      triệu
                     </span>
                   </div>
                 </div>

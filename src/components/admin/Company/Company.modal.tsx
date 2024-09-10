@@ -7,11 +7,7 @@ import {
   ProFormTextArea,
 } from "@ant-design/pro-components";
 import { ICompany } from "@/types/backend";
-import {
-  createCompany,
-  createDocumentElastic,
-  updateCompany,
-} from "@/config/api";
+import { createCompany, updateCompany } from "@/config/api";
 import { useEffect, useState } from "react";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import dynamic from "next/dynamic";
@@ -89,9 +85,8 @@ const CompanyModal = (props: IProps) => {
         index: "companies",
         document: company,
       };
-      const createSuccess = await createDocumentElastic(companiesIndex);
 
-      if (res && createSuccess) {
+      if (res) {
         message.success(`Cập nhật công ty (${company.name}) thành công`);
         setOpenModal(false);
         setDataInit(null);
@@ -118,9 +113,8 @@ const CompanyModal = (props: IProps) => {
         index: "companies",
         document: company,
       };
-      const createSuccess = await createDocumentElastic(companiesIndex);
 
-      if (res && createSuccess) {
+      if (res) {
         message.success(`Thêm mới công ty (${company.name}) thành công`);
         setOpenModal(false);
         setValue("");

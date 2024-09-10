@@ -2,12 +2,14 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 
 import {
+  createComment,
   fetchCompanyById,
   fetchJobs,
   followCompany,
+  getComments,
   unFollowCompany,
 } from "@/config/api";
-import { Button, message, Result, Skeleton } from "antd";
+import { Avatar, Button, message, Result, Skeleton } from "antd";
 import React from "react";
 import classNames from "classnames/bind";
 import styles from "../../../../styles/CompanyInfo.module.scss";
@@ -20,10 +22,10 @@ import {
   faSearch,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
-import { ICompany, IJob, IMeta } from "@/types/backend";
+import { IComment, ICompany, IJob, IMeta } from "@/types/backend";
 import { useAppSelector } from "@/lib/redux/hooks";
-import Link from "next/link";
 import JobCard from "@/components/client/Job/Job.card";
+import CompanyComment from "@/components/client/Company/Company.comment";
 
 const cx = classNames.bind(styles);
 
@@ -36,11 +38,19 @@ const CompanyInfo = (props: any) => {
 
   const [jobs, setJobs] = useState<IJob[]>([]);
 
+  const [comments, setComments] = useState<IComment[]>([]);
+
   const [meta, setMeta] = useState<IMeta>();
 
   const [isSearching, setIsSearching] = useState(false);
 
+  const [totalComments, setTotalComments] = useState(0);
+
+  const [commentValue, setCommentValue] = useState("");
+
   const [searchValue, setSearchValue] = useState("");
+
+  const [commentLoading, setCommentLoading] = useState(false);
 
   const userId = useAppSelector((state) => state.auth.user?._id);
 
@@ -110,8 +120,22 @@ const CompanyInfo = (props: any) => {
           companyId: res.data._id?.trim(),
           companyName: res.data.name.trim(),
         });
+
+        const commentList = await getComments({
+          current: 1,
+          pageSize: 30,
+          companyId: res.data._id?.trim(),
+        });
+        let totalLenght = commentList.data?.result?.length as number;
+
+        commentList.data?.result?.forEach((comment: IComment) => {
+          totalLenght += (comment.right - comment.left - 1) / 2;
+        });
+
+        setTotalComments(totalLenght);
         setJobs(jobRes?.data?.result as IJob[]);
         setMeta(jobRes?.data?.meta as any);
+        setComments(commentList.data?.result as IComment[]);
       }
 
       setCompany(res.data);
@@ -156,6 +180,67 @@ const CompanyInfo = (props: any) => {
     setSearchValue(e.target.value);
   };
 
+  const handleComment = (e: any) => {
+    setCommentValue(e.target.value);
+  };
+
+  const handleSendComment = async (e: any) => {
+    if (e.key === "Enter") {
+      if (commentLoading) return;
+
+      if (!isAuth) {
+        message.error("Vui lòng đăng nhập");
+        return;
+      }
+      if (!commentValue.trim()) return;
+
+      setCommentLoading(true);
+      const res = await createComment({
+        companyId: company?._id as string,
+        content: commentValue,
+      });
+
+      if (res.data) {
+        setComments((prev: any) => {
+          return [res.data, ...prev];
+        });
+        message.success("Bình luận thành công");
+        setTotalComments((prev: any) => prev + 1);
+        setCommentValue("");
+      }
+      setCommentLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (commentLoading) return;
+
+    if (!isAuth) {
+      message.error("Vui lòng đăng nhập");
+      return;
+    }
+
+    if (!commentValue.trim()) return;
+
+    setCommentLoading(true);
+
+    const res = await createComment({
+      companyId: company?._id as string,
+      content: commentValue,
+    });
+
+    if (res.data) {
+      setComments((prev: any) => {
+        return [res.data, ...prev];
+      });
+
+      message.success("Bình luận thành công");
+      setTotalComments((prev: any) => prev + 1);
+      setCommentValue("");
+    }
+    setCommentLoading(false);
+  };
+
   const handleSearch = async () => {
     setIsSearching(true);
 
@@ -167,6 +252,7 @@ const CompanyInfo = (props: any) => {
     });
 
     setJobs(jobRes?.data?.result as IJob[]);
+    setMeta(jobRes?.data?.meta as any);
     setIsSearching(false);
   };
 
@@ -342,6 +428,47 @@ const CompanyInfo = (props: any) => {
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+            <div className={cx("company-comment")}>
+              <div className={cx("section-comment")}>
+                <div className={cx("comment-header")}>
+                  <h2 className={cx("comment-title")}>
+                    {totalComments} bình luận
+                  </h2>
+                  <div className={cx("comment-form")}>
+                    <input
+                      onChange={handleComment}
+                      value={commentValue}
+                      onKeyDown={handleSendComment}
+                      type="text"
+                      placeholder="Viết bình luận"
+                      className={cx("form-control")}
+                    />
+                    <button
+                      onClick={handleSubmit}
+                      className={cx("send-comment")}
+                    >
+                      Gửi
+                    </button>
+                  </div>
+                </div>
+                <div className={cx("bar")} />
+
+                <div className={cx("comment-list")}>
+                  {comments?.map((comment: IComment) => {
+                    return (
+                      <CompanyComment
+                        setComments={setComments}
+                        company={company}
+                        setTotalComments={setTotalComments}
+                        level={0}
+                        key={comment._id}
+                        comment={comment}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

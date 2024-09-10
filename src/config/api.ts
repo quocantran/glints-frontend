@@ -20,6 +20,8 @@ import {
   IFile,
   INotification,
   IElasticsearchResult,
+  IComment,
+  ICreateComment,
 } from "@/types/backend";
 import { message, notification } from "antd";
 
@@ -362,7 +364,6 @@ export const deleteCompany = async (id: string) => {
       },
     }
   );
-  await deleteDocumentElastic({ index: "companies", id });
   if (!res) {
     notification.error({
       message: "Có lỗi xảy ra",
@@ -1092,36 +1093,61 @@ export const getDocumentsElastic = async (body: {
   return data;
 };
 
-export const createDocumentElastic = async (body: {
-  index: string;
-  document: any;
-}) => {
-  const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/elasticsearchs/create`,
+//api comments
+
+export const getComments = async ({
+  current = 1,
+  companyId = "",
+  pageSize = 30,
+  sort = "-createdAt",
+}): Promise<IBackendRes<IModelPaginate<IComment>>> => {
+  const res = await fetch(
+    `${BACKEND_URL}/api/v1/comments/by-company/${companyId}?current=${current}&pageSize=${pageSize}&sort=${sort}`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
     }
   );
-  if (res.statusCode !== 201) {
-    notification.error({
-      message: "Có lỗi xảy ra",
-      description: res.message,
-    });
-    return;
-  }
+  const data = await res.json();
+
+  return data;
+};
+
+export const createComment = async (body: ICreateComment) => {
+  const res = await fetchWithInterceptor(`${BACKEND_URL}/api/v1/comments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
   return res;
 };
 
-export const deleteDocumentElastic = async (body: {
-  index: string;
-  id: string;
-}) => {
+export const getCommentsByParent = async ({
+  current = 1,
+  pageSize = 1,
+  parentId = "",
+  sort = "-createdAt",
+}): Promise<IBackendRes<IModelPaginate<IComment>>> => {
+  const res = await fetch(
+    `${BACKEND_URL}/api/v1/comments/parent/${parentId}?current=${current}&pageSize=${pageSize}&sort=${sort}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+  return data;
+};
+
+export const deleteComment = async (id: string) => {
   const res = await fetchWithInterceptor(
-    `${BACKEND_URL}/api/v1/elasticsearchs/${body.index}/${body.id}`,
+    `${BACKEND_URL}/api/v1/comments/${id}`,
     {
       method: "DELETE",
       headers: {
@@ -1129,12 +1155,6 @@ export const deleteDocumentElastic = async (body: {
       },
     }
   );
-  if (res.statusCode !== 200) {
-    notification.error({
-      message: "Có lỗi xảy ra",
-      description: res.message,
-    });
-    return;
-  }
+
   return res;
 };

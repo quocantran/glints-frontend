@@ -253,3 +253,30 @@ export interface INotification {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface IComment {
+  _id?: string;
+  content: string;
+  user: {
+    _id: string;
+    name: string;
+  };
+  company: {
+    _id: string;
+    name: string;
+  };
+  parentId?: string;
+  left: number;
+  right: number;
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ICreateComment {
+  content: string;
+  parentId?: string;
+  companyId: string;
+}

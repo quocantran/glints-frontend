@@ -389,9 +389,140 @@
     cursor: pointer;
     &:hover {
       background-color: #00b14f;
-      color: #fff;
+      color: #fff !important;
       text-decoration: none;
     }
+  }
+}
+
+.company-comment {
+  margin-top: 35px;
+  background-color: #fff;
+  padding: 16px;
+}
+
+.comment-title {
+  color: rgb(22, 24, 35);
+  font-weight: 700;
+  line-height: 26px;
+  font-size: 18px;
+  margin: 0px;
+}
+
+.comment-form {
+  margin-top: 10px;
+  position: relative;
+  padding: 16px;
+  -webkit-box-align: end;
+  align-items: end;
+  background-color: rgba(22, 24, 35, 0.06);
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0px 9px 0px 16px;
+  cursor: text;
+  input {
+    all: unset;
+    width: 82%;
+    padding: 16px;
+  }
+}
+
+.send-comment {
+  background-color: #00b14f;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.bar {
+  width: 100%;
+  height: 1px;
+  background-color: #e9eaec;
+  margin-top: 30px;
+}
+
+.comment-list {
+  margin-top: 14px;
+}
+
+.comment-wrapper {
+  margin: 10px 0;
+}
+
+.comment-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  &:hover {
+    .comment-delete {
+      opacity: 1;
+    }
+  }
+}
+
+.comment-content {
+  margin-left: 16px;
+}
+
+.comment-name {
+  font-size: 14px;
+  color: #161823;
+  font-weight: 600;
+}
+
+.comment-desc {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.comment-time {
+  font-size: 14px;
+  color: #6e7c8e;
+  font-weight: 400;
+}
+
+.comment-more {
+  margin-left: 45px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #16182380;
+
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.comment-answer {
+  color: #161823;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.comment-delete {
+  position: absolute;
+  right: 50px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  transition: all 0.2s ease-in;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  &:hover {
+    background-color: rgba(22, 24, 35, 0.12);
+  }
+
+  svg {
+    color: #00b14f;
   }
 }
 
@@ -439,5 +570,9 @@
   .btn-follow {
     right: 25%;
     top: 220%;
+  }
+
+  .send-comment {
+    margin-left: 10px;
   }
 }

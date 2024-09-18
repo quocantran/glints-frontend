@@ -136,7 +136,7 @@ const Login: React.FC = () => {
             <Divider>Or</Divider>
 
             <a
-              href="http://localhost:8000/api/v1/auth/google"
+              href={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/google`}
               className={cx("social-login")}
             >
               <div className={cx("gsi-material-button")}>

@@ -250,6 +250,54 @@
   }
 }
 
+.modal-payment {
+  h2 {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.04);
+
+    text-align: center;
+    padding: 20px 0;
+    color: #263a4d;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 24px;
+    span {
+      color: #00b14f;
+    }
+    margin-bottom: 15px;
+  }
+}
+
+.payment-title {
+  font-size: 18px;
+  margin-top: 10px;
+  color: #263a4d;
+  span {
+    font-size: 22px;
+    color: #00b14f;
+  }
+}
+
+.payment-inner {
+  text-align: center;
+  h3 {
+    color: #263a4d;
+    font-size: 20px;
+    font-weight: 700;
+    span {
+      color: #00b14f;
+      font-size: 24px;
+    }
+  }
+}
+
+.qr-code {
+  margin: 10px 0;
+  img {
+    width: 400px;
+    height: 400px;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .content {
     display: block;
@@ -272,5 +320,12 @@
   }
   .item-content {
     text-align: center;
+  }
+
+  .qr-code {
+    img {
+      width: 300px;
+      height: 300px;
+    }
   }
 }

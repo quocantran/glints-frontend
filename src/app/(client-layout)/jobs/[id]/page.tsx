@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import styles from "../../../../styles/JobInfo.module.scss";
 import { fetchJobById } from "@/config/api";
 import { Button, Result, Tag } from "antd";
-import { formatNumberToMillions } from "@/helpers/FormatMoney";
+import { formatNumberToMillions } from "@/helpers/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import JobButton from "@/components/client/Job/Job.button";
 import { IJob } from "@/types/backend";
 import Link from "next/link";
+import JobTransaction from "@/components/client/Job/Job.transaction";
 
 const cx = classNames.bind(styles);
 
@@ -77,6 +78,8 @@ const JobInfo = async (props: any) => {
               </div>
 
               <div className={cx("job-time")}>
+                <JobTransaction job={res.data} />
+
                 <Tag color="#f2f4f5">
                   <span className={cx("tag-title")}>
                     <FontAwesomeIcon icon={faClock} />

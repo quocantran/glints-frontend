@@ -18,7 +18,7 @@ import vi_VN from "dayjs/locale/vi";
 import ResumeModalClient from "@/components/client/Resume/ResumeClient.modal";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
-import { formatNumberToMillions } from "@/helpers/FormatMoney";
+import { formatNumberToMillions } from "@/helpers/index";
 import { isMobile } from "react-device-detect";
 dayjs.extend(relativeTime);
 dayjs.locale(vi_VN);

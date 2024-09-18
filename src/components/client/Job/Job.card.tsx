@@ -4,7 +4,7 @@ import React from "react";
 import classnames from "classnames/bind";
 import styles from "../../../styles/CompanyInfo.module.scss";
 import { ICompany, IJob } from "@/types/backend";
-import { formatNumberToMillions } from "@/helpers/FormatMoney";
+import { formatNumberToMillions } from "@/helpers/index";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 

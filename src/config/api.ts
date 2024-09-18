@@ -26,7 +26,6 @@ import {
 import { message, notification } from "antd";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
-
 const NO_RETRY_HEADER = "No-Retry";
 
 interface FetchOptions extends RequestInit {
@@ -1156,5 +1155,17 @@ export const deleteComment = async (id: string) => {
     }
   );
 
+  return res;
+};
+
+//api payments
+
+export const getDataPayment = async () => {
+  const res = await fetch(`${BACKEND_URL}/api/v1/payments`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   return res;
 };

@@ -109,6 +109,7 @@ export interface IJob {
     logo?: string;
     address?: string;
   };
+  paidUsers?: string[];
   location: string;
   salary: number;
   quantity: number;

@@ -143,15 +143,18 @@ const Chat = () => {
     }
 
     const data: IChat = {
-      name: user.name,
       content: input,
-      userId: user._id,
-      type: file ? "image" : "text",
       fileUrl: fileUrl ? fileUrl : "",
     };
 
     createChat(data);
-    socket.emit("message", data);
+    socket.emit("message", {
+      user: {
+        _id: user._id,
+        name: user.name,
+      },
+      ...data,
+    });
     setInput("");
     setFile(null);
     setFileUrl(null);

@@ -36,7 +36,7 @@ const MessageCard = (props: IProps) => {
   return (
     <div
       style={
-        chat.userId === userId
+        chat.user?._id === userId
           ? { display: "flex", justifyContent: "right" }
           : {}
       }
@@ -45,19 +45,19 @@ const MessageCard = (props: IProps) => {
       <div className={cx("message-box")}>
         <div
           style={
-            chat.userId === userId
+            chat.user?._id === userId
               ? { display: "flex", justifyContent: "right" }
               : {}
           }
           className={cx("message-info")}
         >
           <p>
-            Từ <span>{chat.name} </span>(
+            Từ <span>{chat.user?.name} </span>(
             {dayjs(chat.createdAt).format("HH:mm:ss")}) :
           </p>
         </div>
 
-        {chat.userId === userId && (
+        {chat.user?._id === userId && (
           <Popconfirm
             title="Thu hồi"
             description="Bạn có chắc muốn thu hồi tin nhắn?"
@@ -75,7 +75,7 @@ const MessageCard = (props: IProps) => {
 
         {chat.content.length > 0 && (
           <div
-            style={chat.userId === userId ? { float: "right" } : {}}
+            style={chat.user?._id === userId ? { float: "right" } : {}}
             className={cx("message-text")}
           >
             <p>{chat.content}</p>
@@ -86,7 +86,7 @@ const MessageCard = (props: IProps) => {
           {(chat.fileUrl?.length as unknown as number) > 0 && (
             <img
               className={cx("img-file")}
-              style={chat.userId === userId ? { float: "right" } : {}}
+              style={chat.user?._id === userId ? { float: "right" } : {}}
               src={chat.fileUrl}
               alt="file"
             />

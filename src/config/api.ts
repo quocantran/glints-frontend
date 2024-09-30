@@ -556,6 +556,7 @@ export const fetchJobById = async (
     headers: {
       "Content-Type": "application/json",
     },
+    cache: "no-cache",
   });
 
   const data = await res.json();
@@ -657,6 +658,29 @@ export const fetchResumeByUser = async (): Promise<IBackendRes<IResume[]>> => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
+    }
+  );
+  return res;
+};
+
+export const fetchResumeByJob = async ({
+  jobId,
+  current = 1,
+  pageSize = 10,
+}: {
+  jobId: string;
+  current?: number;
+  pageSize?: number;
+}): Promise<IBackendRes<IModelPaginate<IResume[]>>> => {
+  const res = await fetchWithInterceptor(
+    `${BACKEND_URL}/api/v1/resumes/by-job`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      body: JSON.stringify({ jobId, current, pageSize }),
     }
   );
   return res;

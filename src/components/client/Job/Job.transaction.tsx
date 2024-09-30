@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "../../../styles/JobInfo.module.scss";
-import { Flex, Modal, Spin, Tag } from "antd";
+import { Flex, message, Modal, Spin, Tag } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import { faEye, faL } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,8 @@ import socket from "@/utils/socket";
 import { generateRandomCode } from "@/helpers";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LoadingOutlined } from "@ant-design/icons";
+import { fetchResumeByJob } from "@/config/api";
+import JobResume from "./Job.resume";
 
 const cx = classNames.bind(styles);
 
@@ -23,15 +25,18 @@ const JobTransaction = (props: IProps) => {
   const { job } = props;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [paymentCode, setPaymentCode] = useState<string>("");
-  const [paymentStatus, setPaymentStatus] = useState<boolean>(false);
   const [qrCode, setQrCode] = useState<string>("");
   const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
   const user = useAppSelector((state) => state.auth.user);
+  const [paymentStatus, setPaymentStatus] = useState<boolean>(false);
+  const [hasPaid, setHasPaid] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isFetchingResume, setIsFetchingResume] = useState<boolean>(false);
   const [usersCv, setUsersCv] = useState<IResume[]>();
 
   useEffect(() => {
     if (paymentStatus) return;
+    if (hasPaid) return;
 
     if (isAuth) {
       let interval: NodeJS.Timeout;
@@ -40,13 +45,17 @@ const JobTransaction = (props: IProps) => {
         setPaymentCode(generateRandomCode());
       }
 
-      if (isModalOpen && paymentCode && !paymentStatus) {
+      if (isModalOpen && paymentCode && !paymentStatus && !hasPaid) {
         // Đợi 10 giây trước khi bắt đầu interval
         timeout = setTimeout(() => {
           interval = setInterval(() => {
-            socket.emit("checkPayment", { code: "TRAN QUOC AN", amount: 2000 });
-          }, 5000);
-        }, 1000);
+            if (hasPaid) {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }
+            socket.emit("checkPayment", { code: paymentCode });
+          }, 4000);
+        }, 5000);
       }
 
       return () => {
@@ -54,7 +63,26 @@ const JobTransaction = (props: IProps) => {
         clearTimeout(timeout);
       };
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, paymentCode, hasPaid]);
+
+  useEffect(() => {
+    setHasPaid(job.paidUsers?.some((e) => e === user._id) as boolean);
+  }, [user]);
+
+  useEffect(() => {
+    if (hasPaid && isModalOpen) {
+      setIsFetchingResume(true);
+      const fetchData = async () => {
+        const res = await fetchResumeByJob({ jobId: job._id as string });
+
+        setUsersCv(res.data?.result as unknown as IResume[]);
+
+        setIsFetchingResume(false);
+      };
+
+      fetchData();
+    }
+  }, [hasPaid, isModalOpen]);
 
   useEffect(() => {
     if (paymentCode) {
@@ -66,21 +94,25 @@ const JobTransaction = (props: IProps) => {
 
   useEffect(() => {
     if (paymentStatus) {
-      socket.emit("transactionSuccess", { jobId: job._id, userId: user._id });
-
       setLoading(true);
+      socket.emit("transactionSuccess", {
+        jobId: job._id,
+        userId: user._id,
+        code: paymentCode,
+      });
     }
   }, [paymentStatus]);
 
   useEffect(() => {
     if (paymentStatus) {
-      socket.on("transactionSuccess", (data: IResume[]) => {
-        setUsersCv(data);
-        setLoading(false);
+      socket.on("transactionSuccess", (data: any) => {
+        setTimeout(() => {
+          setHasPaid(!!data.status);
+          setLoading(false);
+        }, 2000);
       });
     }
   }, [paymentStatus]);
-  console.log(usersCv);
   useEffect(() => {
     if (paymentStatus) {
     }
@@ -93,7 +125,6 @@ const JobTransaction = (props: IProps) => {
 
         setPaymentStatus(!!data?.transaction_status);
       };
-
       socket.on("checkPayment", handleCheckPayment);
 
       return () => {
@@ -103,7 +134,11 @@ const JobTransaction = (props: IProps) => {
   }, [isModalOpen]);
 
   const showModal = () => {
-    if (!isAuth) return;
+    if (!isAuth) {
+      message.error("Vui lòng đăng nhập để sử dụng tính năng này!");
+
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -136,16 +171,25 @@ const JobTransaction = (props: IProps) => {
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Xác nhận"
-        okButtonProps={{
-          style: {
-            pointerEvents: `${paymentStatus ? "auto" : "none"}`,
-            opacity: `${paymentStatus ? 1 : "0.4"}`,
-          },
-        }}
       >
         <div className={cx("modal-payment")}>
           <>
-            {loading ? (
+            {hasPaid ? (
+              isFetchingResume ? (
+                <Flex align="center" justify="center" gap="middle">
+                  <Spin
+                    indicator={
+                      <LoadingOutlined style={{ fontSize: 48 }} spin />
+                    }
+                  />
+                </Flex>
+              ) : (
+                <JobResume
+                  resumes={usersCv as IResume[]}
+                  isLoading={isFetchingResume}
+                />
+              )
+            ) : loading ? (
               <div
                 style={{
                   height: 500,
@@ -163,7 +207,14 @@ const JobTransaction = (props: IProps) => {
                       }
                     />
                   </Flex>
-                  <p style={{ textAlign: "center", marginTop: "15px" }}>
+                  <p
+                    style={{
+                      textAlign: "center",
+                      marginTop: "15px",
+                      fontSize: "22px",
+                      color: "#00b14f",
+                    }}
+                  >
                     Thanh toán thành công! Vui lòng đợi trong giây lát...
                   </p>
                 </div>
@@ -179,7 +230,7 @@ const JobTransaction = (props: IProps) => {
                   </h3>
                   <div className={cx("payment-title")}>
                     Sử dụng <span>Ứng dụng ngân hàng </span>
-                    để thanh toán
+                    và quét mã QR để thanh toán
                   </div>
 
                   <div className={cx("payment-title")}>

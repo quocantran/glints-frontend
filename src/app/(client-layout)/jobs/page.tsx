@@ -4,7 +4,17 @@ import styles from "../../../styles/JobClient.module.scss";
 import classNames from "classnames/bind";
 import { fetchJobs } from "@/config/api";
 import { IJob } from "@/types/backend";
-import { Button, Card, Result, Select, Skeleton, Tag, message } from "antd";
+import {
+  Button,
+  Card,
+  Flex,
+  Result,
+  Select,
+  Skeleton,
+  Spin,
+  Tag,
+  message,
+} from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -20,6 +30,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatNumberToMillions } from "@/helpers/index";
 import { isMobile } from "react-device-detect";
+import { LoadingOutlined } from "@ant-design/icons";
 dayjs.extend(relativeTime);
 dayjs.locale(vi_VN);
 
@@ -284,7 +295,22 @@ const JobClient = (props: any) => {
 };
 
 const JobClientWithSuspense = (props: any) => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense
+    fallback={
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "15px 0",
+        }}
+      >
+        <Flex align="center" gap="middle">
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+        </Flex>
+      </div>
+    }
+  >
     <JobClient {...props} />
   </Suspense>
 );

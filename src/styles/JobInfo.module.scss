@@ -298,6 +298,15 @@
   }
 }
 
+.resume-users {
+  font-size: 18px;
+  margin: 10px 0;
+  span {
+    color: #00b14f;
+    font-size: 22px;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .content {
     display: block;

@@ -226,11 +226,12 @@ export interface IFile {
 
 export interface IChat {
   _id?: string;
-  name: string;
-  type: string;
   fileUrl?: string;
   content: string;
-  userId: string;
+  user?: {
+    _id: string;
+    name: string;
+  };
   createdBy?: string;
   isDeleted?: boolean;
   deletedAt?: boolean | null;
